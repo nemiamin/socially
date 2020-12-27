@@ -20,12 +20,6 @@ class _TaskScreenState extends State<TaskScreen> {
   Future<void> initState() {
     super.initState();
     loadUser();
-    loadUpcomingTasks();
-  }
-
-  loadUpcomingTasks() async {
-    List<Task> task = await getUpcomingTasks();
-    print(task);
   }
 
   loadUser() async {
@@ -106,10 +100,17 @@ class _TaskScreenState extends State<TaskScreen> {
     stream: Firestore.instance
         .collection('tasks').where('status',isEqualTo: 'inprogress').where('userId', isEqualTo: FirebaseAuth.instance.currentUser.uid).snapshots(),
     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-      return Text(
-        "Ongoing Tasks (${snapshot.data.documents.length})",
-        style: TextStyle(color: Colors.white, fontSize: 15),
-      );
+      if(snapshot.hasData){
+        return Text(
+          "Ongoing Tasks (${snapshot.data.documents.length})",
+          style: TextStyle(color: Colors.white, fontSize: 15),
+        );
+      } else {
+        return Text(
+          "Ongoing Tasks (0)",
+          style: TextStyle(color: Colors.white, fontSize: 15),
+        );
+      }
     }),
                     SizedBox(
                       height: 20,
@@ -131,62 +132,70 @@ class _TaskScreenState extends State<TaskScreen> {
               itemBuilder: (context, index) {
                 return Padding(
                   padding: const EdgeInsets.only(right: 10.0),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10.0, vertical: 10.0),
-                    width: 200,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Color(0xFF8c3aff),
-                          Color(0xFFb63bfe),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: 150,
-                              child: Text(
-                                snapshot.data.documents[index]['title'].toString(),
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15),
-                              ),
-                            ),
-                            Icon(
-                              Icons.more_vert,
-                              size: 20,
-                              color: Colors.white,
-                            ),
+                  child: GestureDetector(
+                    onTap: (){
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TaskDetailScreen(snapshot.data.documents[index].id)));
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10.0, vertical: 10.0),
+                      width: 200,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Color(0xFF8c3aff),
+                            Color(0xFFb63bfe),
                           ],
                         ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          snapshot.data.documents[index]['overview'].toString(),
-                          style: TextStyle(
-                              color: Colors.white, fontSize: 12),
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        //progress bar
-                      ],
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                width: 150,
+                                child: Text(
+                                  snapshot.data.documents[index]['title'].toString(),
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15),
+                                ),
+                              ),
+                              Icon(
+                                Icons.more_vert,
+                                size: 20,
+                                color: Colors.white,
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            snapshot.data.documents[index]['overview'].toString(),
+                            style: TextStyle(
+                                color: Colors.white, fontSize: 12),
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          //progress bar
+                        ],
+                      ),
                     ),
-                  ),
+                  )
                 );
               },
             ),

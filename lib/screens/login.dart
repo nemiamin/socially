@@ -11,7 +11,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _passwordVisible;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
+bool loading = false;
   @override
   void initState() {
     super.initState();
@@ -28,7 +28,13 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Container(
+    return loading ? Container(
+      color: Color(0xFF311f4f),
+      child: Align(
+        alignment: Alignment.center,
+        child: Text('Loading....', style: TextStyle(color: Colors.white),),
+      ),
+    ) : Container(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       color: Color(0xFF311f4f),
       height: double.maxFinite,
@@ -95,15 +101,20 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           GestureDetector(
             onTap: () async {
-
+setState(() {
+  loading = true;
+});
               String loginResponse = await login(emailController.text, passwordController.text);
               print(loginResponse);
               if(loginResponse == 'Logged in successfully!') {
-                  Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => TaskScreen()));
+                // Navigator.push(context,
+                //     MaterialPageRoute(builder: (context) => TaskScreen()));
               } else {
                 showMessage(loginResponse);
               }
+setState(() {
+  loading = false;
+});
             },
             child: Center(
               child: Container(

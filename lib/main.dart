@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:socially/localstorage/localstorage.dart';
 import 'package:socially/screens/authentication.dart';
+import 'package:socially/screens/taskScreen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,7 +36,7 @@ Widget build(BuildContext context) {
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
           debugShowCheckedModeBanner: false,
-          home: MainScreen(),
+          home: showRootScreen(),
         );
       }
 
@@ -48,4 +50,20 @@ Widget build(BuildContext context) {
     },
   );
 }
+
+  Widget showRootScreen() {
+    return StreamBuilder<bool>(
+        stream: authBloc.isSessionValid,
+        builder: (context, snapshot) {
+          // return CustomerJobList();
+          if (snapshot.hasData && snapshot.data) {
+
+            return TaskScreen();
+          } else {
+            print("back to login");
+            return MainScreen();
+          }
+        });
+  }
+
 }

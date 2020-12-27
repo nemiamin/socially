@@ -21,7 +21,7 @@ Future<String> register(String email, String password, String name) async {
       'isEmailVerified': user.emailVerified,
       'photoUrl': user.photoURL,
     });
-
+    authBloc.openSession(userCredential);
 
     return 'Registered successfully!';
   } on FirebaseAuthException catch (e) {

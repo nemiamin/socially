@@ -9,6 +9,7 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   bool _passwordVisible;
+  bool loading = false;
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -38,7 +39,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       key: _scaffoldKey,
-      body: Container(
+      body: loading ? Container(
+        color: Color(0xFF311f4f),
+    child: Align(
+    alignment: Alignment.center,
+    child: Text('Loading....', style: TextStyle(color: Colors.white),),
+    ),
+    ) : Container(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         color: Color(0xFF311f4f),
         height: double.maxFinite,
@@ -125,15 +132,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
             Center(
               child: GestureDetector(
                 onTap: () async {
+                  setState(() {
+                    loading = true;
+                  });
+
                   String resgisterResponse = await register(emailController.text, passwordController.text, nameController.text);
                   print(resgisterResponse);
                   showMessage(resgisterResponse);
                   if(resgisterResponse == 'Registered successfully!') {
                     resetForm();
-                    Navigator.of(context).push(
-                        new MaterialPageRoute(
-                            builder: (BuildContext context) => TaskScreen()));
+                    // Navigator.of(context).push(
+                    //     new MaterialPageRoute(
+                    //         builder: (BuildContext context) => TaskScreen()));
                   }
+                  setState(() {
+                    loading = false;
+                  });
                 },
                 child: Container(
                   height: 50,
