@@ -29,6 +29,7 @@ Widget build(BuildContext context) {
 
       // Once complete, show your application
       if (snapshot.connectionState == ConnectionState.done) {
+        authBloc.restoreSession();
         return MaterialApp(
           title: 'Flutter Demo',
           theme: ThemeData(

@@ -25,6 +25,14 @@ bool loading = false;
     Scaffold.of(context).showSnackBar(snackBar);
   }
 
+  validateForm() {
+    if(emailController.text.isEmpty) {
+      showMessage('Email is required!');
+    } else if(passwordController.text.isEmpty ) {
+      showMessage('Password is required!');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -101,20 +109,20 @@ bool loading = false;
           ),
           GestureDetector(
             onTap: () async {
-setState(() {
-  loading = true;
-});
-              String loginResponse = await login(emailController.text, passwordController.text);
-              print(loginResponse);
-              if(loginResponse == 'Logged in successfully!') {
-                // Navigator.push(context,
-                //     MaterialPageRoute(builder: (context) => TaskScreen()));
-              } else {
-                showMessage(loginResponse);
-              }
-setState(() {
-  loading = false;
-});
+              print(emailController.text.isNotEmpty);
+if(emailController.text.isNotEmpty && passwordController.text.isNotEmpty ){
+  setState(() {
+    loading = true;
+  });
+  String loginResponse = await login(emailController.text, passwordController.text);
+  print(loginResponse);
+    showMessage(loginResponse);
+  setState(() {
+    loading = false;
+  });
+} else {
+  validateForm();
+}
             },
             child: Center(
               child: Container(

@@ -19,6 +19,12 @@ class _AddTaskState extends State<AddTask> {
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
+  validateForm() {
+    if(titleController.text.isEmpty) {
+      showMessage('Title is required!');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -144,11 +150,15 @@ class _AddTaskState extends State<AddTask> {
                     ),
                     GestureDetector(
                       onTap: () async {
-                        String addTaskResponse = await addTask(titleController.text, overviewController.text);
-                        showMessage(addTaskResponse);
-                        print(addTaskResponse);
-                        if(addTaskResponse == 'Task created successfully!') {
-                          Navigator.pop(context);
+                        if(titleController.text.isNotEmpty) {
+                          String addTaskResponse = await addTask(titleController.text, overviewController.text);
+                          showMessage(addTaskResponse);
+                          print(addTaskResponse);
+                          if(addTaskResponse == 'Task created successfully!') {
+                            Navigator.pop(context);
+                          }
+                        } else {
+                          validateForm();
                         }
                       },
                       child: Center(

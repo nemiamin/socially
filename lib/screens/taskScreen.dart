@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:socially/firestore/authentication.dart';
 import 'package:socially/firestore/task.dart';
 import 'package:socially/model/task.dart';
@@ -32,6 +33,49 @@ class _TaskScreenState extends State<TaskScreen> {
     }
   }
 
+  date(DateTime tm) {
+    String month;
+    switch (tm.month) {
+      case 1:
+        month = "JAN";
+        break;
+      case 2:
+        month = "FEB";
+        break;
+      case 3:
+        month = "MAR";
+        break;
+      case 4:
+        month = "APR";
+        break;
+      case 5:
+        month = "MAY";
+        break;
+      case 6:
+        month = "JUN";
+        break;
+      case 7:
+        month = "JUL";
+        break;
+      case 8:
+        month = "AUG";
+        break;
+      case 9:
+        month = "SEP";
+        break;
+      case 10:
+        month = "OCT";
+        break;
+      case 11:
+        month = "NOV";
+        break;
+      case 12:
+        month = "DEC";
+        break;
+    }
+    return '${month} ${tm.day}';
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +83,7 @@ class _TaskScreenState extends State<TaskScreen> {
       backgroundColor: Color(0xFF311f4f),
       body: loading ? Align(
         alignment: Alignment.center,
-        child: Text('Loading...')
+        child: Text('Loading...',style: TextStyle(color: Colors.white))
       ) : SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(
@@ -209,7 +253,7 @@ class _TaskScreenState extends State<TaskScreen> {
       } else {
         return Align(
           alignment: Alignment.center,
-          child: Text('Loading....'),
+          child: Text('Loading....', style: TextStyle(color: Colors.white),),
         );
       }
     }),
@@ -300,7 +344,7 @@ class _TaskScreenState extends State<TaskScreen> {
                         ),
                       ),
                       trailing: Text(
-                        "Dec 16",
+                          date(snapshot.data.documents[index]['date'].toDate()).toString(),
                         style: TextStyle(
                             color: Colors.white, fontSize: 15),
                       ),
@@ -319,7 +363,7 @@ class _TaskScreenState extends State<TaskScreen> {
       } else {
         return Align(
           alignment: Alignment.center,
-          child:Text('Loading...')
+          child:Text('Loading...',style: TextStyle(color: Colors.white))
         );
       }
     })

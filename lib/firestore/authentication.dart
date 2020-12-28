@@ -31,9 +31,12 @@ Future<String> register(String email, String password, String name) async {
     } else if (e.code == 'email-already-in-use') {
       print('The account already exists for that email.');
       return 'The account already exists for that email.';
+    }else if (e.code == 'invalid-email') {
+      return 'The email address is badly formatted';
     }
   } catch (e) {
     print(e);
+    return 'Something went wrong!';
   }
 }
 

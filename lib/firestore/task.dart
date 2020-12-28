@@ -45,7 +45,7 @@ Future<String> addSubTask(title, main_task_id) async {
   }
 }
 
-Future<String> updateSubTask(id, currentStatus) async {
+Future<String> updateSubTask(id, currentStatus, mainID) async {
   try {
     await Firestore.instance
         .collection('subtasks')
@@ -53,6 +53,15 @@ Future<String> updateSubTask(id, currentStatus) async {
         .updateData({
       'status': currentStatus == 'pending' ? 'completed' : 'pending'
     });
+if(currentStatus == 'pending') {
+  await Firestore.instance
+      .collection('tasks')
+      .doc(mainID)
+      .updateData({
+    'status': currentStatus == 'pending' ? 'inprogress' : 'pending'
+  });
+}
+
     return 'Sub Task updated successfully!';
   } catch(e) {
     return 'Something went wrong!';

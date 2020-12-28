@@ -28,6 +28,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
     Scaffold.of(context).showSnackBar(snackBar);
   }
 
+  validateForm() {
+    if(nameController.text.isEmpty) {
+      showMessage('Name is required!');
+    } else if(emailController.text.isEmpty) {
+      showMessage('Email is required!');
+    } else if(passwordController.text.isEmpty) {
+      showMessage('Password is required!');
+    }
+  }
+
   resetForm() {
     nameController.clear();
     emailController.clear();
@@ -132,22 +142,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
             Center(
               child: GestureDetector(
                 onTap: () async {
-                  setState(() {
-                    loading = true;
-                  });
+                  if(nameController.text.isNotEmpty && emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
+                    setState(() {
+                      loading = true;
+                    });
 
-                  String resgisterResponse = await register(emailController.text, passwordController.text, nameController.text);
-                  print(resgisterResponse);
-                  showMessage(resgisterResponse);
-                  if(resgisterResponse == 'Registered successfully!') {
-                    resetForm();
-                    // Navigator.of(context).push(
-                    //     new MaterialPageRoute(
-                    //         builder: (BuildContext context) => TaskScreen()));
+                    String resgisterResponse = await register(emailController.text.trim().toLowerCase(), passwordController.text, nameController.text);
+                    print(resgisterResponse);
+                    showMessage(resgisterResponse);
+                    if(resgisterResponse == 'Registered successfully!') {
+                      resetForm();
+                    }
+                    setState(() {
+                      loading = false;
+                    });
+                  } else {
+                    validateForm();
                   }
-                  setState(() {
-                    loading = false;
-                  });
                 },
                 child: Container(
                   height: 50,

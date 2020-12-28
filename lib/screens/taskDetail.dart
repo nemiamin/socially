@@ -17,29 +17,6 @@ bool deleted = false;
 TextEditingController titleController = TextEditingController();
 final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  void _modalBottomSheetMenu(){
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext ctx) {
-          return SafeArea(
-            child: Container(
-              child: new Wrap(
-                children: <Widget>[
-                  new ListTile(
-                      leading: new  Icon(Icons.add),
-                      title: new Text('Add Sub task'),
-                      onTap: () {
-                        _subTaskBottomSheet();
-                        Navigator.of(context).pop();
-                      }),
-
-                ],
-              ),
-            ),
-          );
-        });
-  }
-
 showMessage(String msg) {
   if(msg != null) {
     final SnackBar snackBar =
@@ -52,6 +29,7 @@ showMessage(String msg) {
 void _subTaskBottomSheet(){
   showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       builder: (BuildContext ctx) {
         Size size = MediaQuery.of(ctx).size;
         return SafeArea(
@@ -227,7 +205,7 @@ void _subTaskBottomSheet(){
                               height: 20,
                             ),
                             Text(
-                              snapshot.data != null ? snapshot.data.documents[0]['overview'] : '',
+                              snapshot.data.documents[0]['overview'] == null ? snapshot.data.documents[0]['overview'] : 'No overview',
                               style: TextStyle(color: Colors.white, fontSize: 15),
                             ),
                             SizedBox(
@@ -266,21 +244,64 @@ void _subTaskBottomSheet(){
                                             child: GestureDetector(
                                               onTap: () async {
                                                 print(snapshot.data.documents[index].id);
-                                                String response = await updateSubTask(snapshot.data.documents[index].id,snapshot.data.documents[index]['status']);
+                                                String response = await updateSubTask(snapshot.data.documents[index].id,snapshot.data.documents[index]['status'], this.widget.id);
                                               },
-                                              child: snapshot.data.documents[index]['status'] == 'completed' ? Text(
-                                                snapshot.data.documents[index]['title'].toString(),
-                                                style: TextStyle(
-                                                    color: Colors.white, fontSize: 16, decoration: TextDecoration.lineThrough),
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                              ) : Text(
-                                                snapshot.data.documents[index]['title'].toString(),
-                                                style: TextStyle(
-                                                    color: Colors.white, fontSize: 16, ),
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
+                                              child: snapshot.data.documents[index]['status'] == 'completed' ? Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Container(
+                                                      height:20,
+                                                      width: 20,
+                                                      decoration: BoxDecoration(
+
+                                                        shape: BoxShape.circle,
+                                                        border: Border.all(
+                                                          color: Colors.grey.shade200,
+                                                          width: 1.0,
+                                                        ),
+                                                      ),
+                                                      child: Icon(Icons.check, size:12, color: Colors.white),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex:8,
+                                                    child: Text(
+                                                      snapshot.data.documents[index]['title'].toString(),
+                                                      style: TextStyle(
+                                                          color: Colors.white, fontSize: 16, decoration: TextDecoration.lineThrough),
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                  )
+                                                ],
+                                              ) : Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Container(
+                                                      height:20,
+                                                      width: 20,
+                                                      decoration: BoxDecoration(
+
+                                                        shape: BoxShape.circle,
+                                                        border: Border.all(
+                                                          color: Colors.grey.shade200,
+                                                          width: 1.0,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex:8,
+                                                    child: Text(
+                                                      snapshot.data.documents[index]['title'].toString(),
+                                                      style: TextStyle(
+                                                        color: Colors.white, fontSize: 16, ),
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                  )
+                                                ],
+                                              )
                                             ),
                                           );
                                         },

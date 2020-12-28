@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:socially/firestore/authentication.dart';
 
 class AuthBloc {
   UserCredential user;
@@ -11,6 +12,17 @@ class AuthBloc {
 
   void dispose() {
     _isSessionValid.close();
+  }
+
+  void restoreSession() async {
+   User user = await getUser();
+    if (user != null) {
+      print("User found");
+      _isSessionValid.sink.add(true);
+    } else {
+      print("User not found");
+      _isSessionValid.sink.add(false);
+    }
   }
 
   void openSession(user) async {
