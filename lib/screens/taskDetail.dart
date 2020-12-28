@@ -32,9 +32,11 @@ void _subTaskBottomSheet(){
       isScrollControlled: true,
       builder: (BuildContext ctx) {
         Size size = MediaQuery.of(ctx).size;
-        return SafeArea(
+        return SingleChildScrollView(
           child: Container(
-            height: 200,
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+            
             child: Column(
               children: [
                 Padding(
@@ -205,7 +207,7 @@ void _subTaskBottomSheet(){
                               height: 20,
                             ),
                             Text(
-                              snapshot.data.documents[0]['overview'] == null ? snapshot.data.documents[0]['overview'] : 'No overview',
+                              snapshot.data.documents[0]['overview'] != '' ? snapshot.data.documents[0]['overview'] : 'No overview',
                               style: TextStyle(color: Colors.white, fontSize: 15),
                             ),
                             SizedBox(
@@ -244,7 +246,7 @@ void _subTaskBottomSheet(){
                                             child: GestureDetector(
                                               onTap: () async {
                                                 print(snapshot.data.documents[index].id);
-                                                String response = await updateSubTask(snapshot.data.documents[index].id,snapshot.data.documents[index]['status'], this.widget.id);
+                                                String response = await updateSubTask(snapshot.data.documents[index].id,snapshot.data.documents[index]['status'], this.widget.id, snapshot.data.documents);
                                               },
                                               child: snapshot.data.documents[index]['status'] == 'completed' ? Row(
                                                 children: [
